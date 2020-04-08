@@ -62,29 +62,32 @@ while command[0] != 'q':
   print(f'\n*** {player.current_room.name} ***')
   print(f'{player.current_room.desc}')
 
-  command = input('\nCommands:\nMove: [n]orth, [s]outh, [e]ast, [w]est\nPick up item: [get item_name] or [take item_name]\nDrop item: [drop item_name]\nInventory: [i] or [inventory]\nQuit game: [q]\n').split() 
-  # ^^^^^ splitting this input(hopefully) puts the commands into list form
+  command = input('\nCommands:\nMove: [n]orth, [s]outh, [e]ast, [w]est\nQuit game: [q]\n').split() 
+  # ^^^^^ splitting this input(hopefully) puts the commands into list form for when items are added
 
-  if command == 'n':
+  if command[0] == 'n':
     try:
       player.current_room = player.current_room.n_to
     except AttributeError:
       print("\nYou can't go north")
 
-  elif command == 's':
+  elif command[0] == 's':
     try:
       player.current_room = player.current_room.s_to
     except AttributeError:
       print("\nYou can't go south")
 
-  elif command == 'e':
+  elif command[0] == 'e':
     try:
       player.current_room = player.current_room.e_to
     except AttributeError:
       print("\nYou can't go east")
 
-  elif command == 'w':
+  elif command[0] == 'w':
     try:
       player.current_room = player.current_room.w_to
     except AttributeError:
       print("\nYou can't go west")
+
+  elif command[0] != 'q':
+    print('\ninvalid command')

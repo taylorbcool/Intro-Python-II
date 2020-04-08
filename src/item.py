@@ -3,7 +3,7 @@ class Item:
     self.name = name
     self.desc = desc
 
-  def on_take(self):
+  def on_get(self):
     print(f'You picked up {self.name}')
 
   def on_drop(self):
