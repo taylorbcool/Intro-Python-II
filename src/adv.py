@@ -1,4 +1,5 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -37,6 +38,7 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
+player = Player(input('What is your name? '), room['outside'])
 
 # Write a loop that:
 #
@@ -48,3 +50,41 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+''' 
+when there is no input, command will be an empty string inside a list
+command will have 1 arg for movement and 2 args for interacting with items so it's necessary to make command a list
+'''
+command = ['']
+
+
+while command[0] != 'q':
+  print(f'\n*** {player.current_room.name} ***')
+  print(f'{player.current_room.desc}')
+
+  command = input('\nCommands:\nMove: [n]orth, [s]outh, [e]ast, [w]est\nPick up item: [get item_name] or [take item_name]\nDrop item: [drop item_name]\nInventory: [i] or [inventory]\nQuit game: [q]\n').split() 
+  # ^^^^^ splitting this input(hopefully) puts the commands into list form
+
+  if command == 'n':
+    try:
+      player.current_room = player.current_room.n_to
+    except AttributeError:
+      print("\nYou can't go north")
+
+  elif command == 's':
+    try:
+      player.current_room = player.current_room.s_to
+    except AttributeError:
+      print("\nYou can't go south")
+
+  elif command == 'e':
+    try:
+      player.current_room = player.current_room.e_to
+    except AttributeError:
+      print("\nYou can't go east")
+
+  elif command == 'w':
+    try:
+      player.current_room = player.current_room.w_to
+    except AttributeError:
+      print("\nYou can't go west")
