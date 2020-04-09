@@ -34,6 +34,13 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+# Add items to rooms
+
+room['outside'].items.append(Item('rock', "Just a rock, it's pretty small. More of a pebble really."))
+room['foyer'].items.append(Item('sword', "It's pretty rusty. More likely to give you tetanus than cut anything."))
+room['treasure'].items.extend([Item('gold coin', 'A single shiny coin.'), Item('stick', 'A small piece of wood.')])
+
+
 #
 # Main
 #
@@ -64,7 +71,9 @@ while command[0] != 'q':
   print(f'{player.current_room.desc}')
 
   if len(player.current_room.items) > 0:
-    print(f'\nThis room contains {player.current_room.items}')
+    print("\nOn the ground in front of you is: ")
+    for item in player.current_room.items:
+      print(f'{item.name}: {item.desc}')
 
   command = input('\nCommands:\nMove: [n]orth, [s]outh, [e]ast, [w]est\nPick up item: [take item_name]\nDrop item: [drop item_name]\nOpen inventory: [i] or [inventory]\nQuit game: [q]\n').split() 
   # ^^^^^ splitting this input(hopefully) puts the commands into list form for when items are added
@@ -96,35 +105,39 @@ while command[0] != 'q':
 
     elif command[0] == 'i' or 'inventory':
       if len(player.items) > 0:
-        print(f"{player.name}'s items':\n{str(player.items)}")
-      # elif len(player.items) == 0:
-      #   print("You're not carrying anything!")
+        print(f"\n{player.name}'s items:")
+        for item in player.items:
+          print(f"{item.name}: {item.desc}")
+      else:
+        print(f"\n{player.name}'s inventory is empty.")
 
     elif command[0] != 'q':
       print('\ninvalid command')
 
   elif len(command) == 2:
     if command[0] == 'take':
-      if command[1] in player.current_room.items == True:
-        try:
-          player.items.append(command[1])
-          player.current_room.items.remove(command[1])
-          command[1].on_take()
-        except AttributeError:
-          print("\nYou can't pick that up.")
-      else:
-        print("\nNo item here by that name.")
+      for item in player.current_room.items:
+        if item.name == command[1]:
+          try:
+            player.items.append(item)
+            player.current_room.items.remove(item)
+            item.on_take()
+          except AttributeError:
+            print("\nYou can't pick that up.")
+        else:
+          print("\nNo item here by that name.")
     
     elif command[0] == 'drop':
-      if command[1] in  player.items == True:
-        try:
-          player.items.remove(command[1])
-          player.current_room.items.append(command[1])
-          command[1].on_drop()
-        except AttributeError:
-          print("\nYou can't drop that.")
-      else:
-        print("\nYou don't have that item to drop!")
+      for item in player.current_room.items:
+        if item.name == command[1]:
+          try:
+            player.items.remove(item)
+            player.current_room.items.append(item)
+            item.on_drop()
+          except AttributeError:
+            print("\nYou can't drop that.")
+        else:
+          print("\nYou don't have that item to drop!")
 
     elif command[0] != 'q':
       print('\ninvalid command')
