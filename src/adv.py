@@ -110,7 +110,7 @@ while command[0] != 'q':
           player.items.append(command[1])
           player.current_room.items.remove(command[1])
           command[1].on_take()
-        except:
+        except AttributeError:
           print("\nYou can't pick that up.")
       else:
         print("\nNo item here by that name.")
@@ -121,7 +121,7 @@ while command[0] != 'q':
           player.items.remove(command[1])
           player.current_room.items.append(command[1])
           command[1].on_drop()
-        except:
+        except AttributeError:
           print("\nYou can't drop that.")
       else:
         print("\nYou don't have that item to drop!")
