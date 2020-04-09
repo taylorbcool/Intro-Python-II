@@ -1,5 +1,6 @@
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
@@ -38,7 +39,7 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
-player = Player(input('What is your name? '), room['outside'])
+player = Player(input('What is your name?\n'), room['outside'])
 
 # Write a loop that:
 #
@@ -62,32 +63,68 @@ while command[0] != 'q':
   print(f'\n*** {player.current_room.name} ***')
   print(f'{player.current_room.desc}')
 
-  command = input('\nCommands:\nMove: [n]orth, [s]outh, [e]ast, [w]est\nQuit game: [q]\n').split() 
+  if len(player.current_room.items) > 0:
+    print(f'\nThis room contains {player.current_room.items}')
+
+  command = input('\nCommands:\nMove: [n]orth, [s]outh, [e]ast, [w]est\nPick up item: [take item_name]\nDrop item: [drop item_name]\nOpen inventory: [i] or [inventory]\nQuit game: [q]\n').split() 
   # ^^^^^ splitting this input(hopefully) puts the commands into list form for when items are added
 
-  if command[0] == 'n':
-    try:
-      player.current_room = player.current_room.n_to
-    except AttributeError:
-      print("\nYou can't go north")
+  if len(command) < 2:
+    if command[0] == 'n':
+      try:
+        player.current_room = player.current_room.n_to
+      except AttributeError:
+        print("\nYou can't go north")
 
-  elif command[0] == 's':
-    try:
-      player.current_room = player.current_room.s_to
-    except AttributeError:
-      print("\nYou can't go south")
+    elif command[0] == 's':
+      try:
+        player.current_room = player.current_room.s_to
+      except AttributeError:
+        print("\nYou can't go south")
 
-  elif command[0] == 'e':
-    try:
-      player.current_room = player.current_room.e_to
-    except AttributeError:
-      print("\nYou can't go east")
+    elif command[0] == 'e':
+      try:
+        player.current_room = player.current_room.e_to
+      except AttributeError:
+        print("\nYou can't go east")
 
-  elif command[0] == 'w':
-    try:
-      player.current_room = player.current_room.w_to
-    except AttributeError:
-      print("\nYou can't go west")
+    elif command[0] == 'w':
+      try:
+        player.current_room = player.current_room.w_to
+      except AttributeError:
+        print("\nYou can't go west")
 
-  elif command[0] != 'q':
-    print('\ninvalid command')
+    elif command[0] == 'i' or 'inventory':
+      if len(player.items) > 0:
+        print(f"{player.name}'s items':\n{str(player.items)}")
+      # elif len(player.items) == 0:
+      #   print("You're not carrying anything!")
+
+    elif command[0] != 'q':
+      print('\ninvalid command')
+
+  elif len(command) == 2:
+    if command[0] == 'take':
+      if command[1] in player.current_room.items == True:
+        try:
+          player.items.append(command[1])
+          player.current_room.items.remove(command[1])
+          command[1].on_take()
+        except:
+          print("\nYou can't pick that up.")
+      else:
+        print("\nNo item here by that name.")
+    
+    elif command[0] == 'drop':
+      if command[1] in  player.items == True:
+        try:
+          player.items.remove(command[1])
+          player.current_room.items.append(command[1])
+          command[1].on_drop()
+        except:
+          print("\nYou can't drop that.")
+      else:
+        print("\nYou don't have that item to drop!")
+
+    elif command[0] != 'q':
+      print('\ninvalid command')
